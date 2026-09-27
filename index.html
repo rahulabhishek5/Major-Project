@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="UBS Continuous Regulatory Change Manager — AI-powered multi-agent system for regulatory compliance change detection and operationalisation">
+  <title>Policy Pilot — Enterprise Compliance Manager — Continuous Compliance Intelligence</title>
+
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide SVG Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- PDF.js for Client-Side PDF Parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+
+  <!-- Tesseract.js for OCR -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- HTML2PDF for PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Chart.js for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- D3.js for Nerve Center Graph -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="css/index.css?v=12">
+  <link rel="stylesheet" href="css/components.css?v=23">
+  <link rel="stylesheet" href="css/dashboard.css?v=27">
+  <link rel="stylesheet" href="css/feed.css?v=27">
+  <link rel="stylesheet" href="css/policy.css?v=23">
+  <link rel="stylesheet" href="css/audit.css?v=14">
+  <link rel="stylesheet" href="css/escalation.css?v=16">
+  <link rel="stylesheet" href="css/copilot.css?v=19">
+  <link rel="stylesheet" href="css/login.css?v=13">
+  <link rel="stylesheet" href="css/sentinel.css?v=1">
+
+  <style>
+    /* Inline critical loading styles */
+    /* Premium Loading Screen Styles */
+    .app-loader {
+      position: fixed; inset: 0; background: #020617;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+    .app-loader.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
+    .app-loader::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at center, rgba(225,29,72,0.15) 0%, transparent 60%);
+    }
+    .app-loader__grid {
+      position: absolute; inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.6;
+      transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(3);
+      animation: grid-move 10s linear infinite;
+    }
+    @keyframes grid-move { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
+    
+    .app-loader__content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+    
+    .app-loader__logo-wrapper {
+      position: relative; width: 80px; height: 80px; margin-bottom: 40px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .app-loader__rings {
+      position: absolute; inset: -40px; border-radius: 50%;
+      border: 1px solid rgba(225,29,72,0.2);
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    .app-loader__rings::before {
+      content: ''; position: absolute; inset: -20px; border-radius: 50%;
+      border: 1px dashed rgba(225,29,72,0.3);
+      animation: spin-ring 10s linear infinite;
+    }
+    @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.2); opacity: 0; } }
+    @keyframes spin-ring { 100% { transform: rotate(360deg); } }
+
+    .app-loader__logo {
+      width: 100%; height: 100%; 
+      background: linear-gradient(135deg, rgba(225,29,72,0.9), rgba(159,18,57,0.9));
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 900; color: #fff; font-family: 'Inter', sans-serif;
+      box-shadow: 0 0 40px rgba(225,29,72,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+      position: relative; overflow: hidden;
+    }
+    .app-loader__logo::after {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+      transform: rotate(45deg); animation: shimmer-logo 2.5s infinite;
+    }
+    @keyframes shimmer-logo { 0% { transform: rotate(45deg) translateY(-100%); } 100% { transform: rotate(45deg) translateY(100%); } }
+    
+    .app-loader__text { color: #f8fafc; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+    .app-loader__subtext { color: #64748b; font-family: 'Inter', monospace; font-size: 12px; margin-top: 10px; }
+    
+    .app-loader__bar { width: 280px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 100px; margin-top: 32px; overflow: hidden; position: relative; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); }
+    .app-loader__fill { position: absolute; top:0; left:0; height: 100%; background: linear-gradient(90deg, #E11D48, #F43F5E); border-radius: 100px; animation: load-progress 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-shadow: 0 0 12px #E11D48; }
+    @keyframes load-progress { 0% { width: 0%; } 40% { width: 50%; } 80% { width: 85%; } 100% { width: 100%; } }
+    
+    /* Session-based immediate boot states to prevent blinking */
+    .no-session-boot #app-loader { display: none !important; }
+    .no-session-boot #login-screen { display: flex !important; }
+  </style>
+</head>
+<body>
+  <script>
+    (function() {
+      try {
+        var session = localStorage.getItem('app_session');
+        if (!session) {
+          document.documentElement.classList.add('no-session-boot');
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <!-- Loading Screen -->
+  <div class="app-loader" id="app-loader">
+    <div class="app-loader__grid"></div>
+    <div class="app-loader__content">
+      <div class="app-loader__logo-wrapper">
+        <div class="app-loader__rings"></div>
+        <div class="app-loader__logo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto;"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg></div>
+      </div>
+      <div class="app-loader__text">Policy Pilot</div>
+      <div class="app-loader__subtext" id="loader-status">Establishing secure connection...</div>
+      <div class="app-loader__bar"><div class="app-loader__fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Login Screen (Split Layout) -->
+  <div class="login-screen" id="login-screen" style="display:none;">
+    <div class="login-screen__grid"></div>
+    <div class="login-screen__glow"></div>
+    <div class="login-screen__container">
+      
+      <!-- Left Hero Section -->
+      <div class="login-hero">
+        <div class="login-hero__brand">
+          <div class="login-hero__logo">
+            <i data-lucide="shield-check" style="width:24px;height:24px;color:#fff;"></i>
+          </div>
+          <div class="login-hero__brand-text">
+            <h2>Policy<span style="color:#E11D48">Pilot</span></h2>
+            <p>Continuous Compliance. Smarter Monitoring.</p>
+          </div>
+        </div>
+        
+        <h1 class="login-hero__title">
+          Your Firm's<br>
+          <span class="login-hero__highlight">Digital Compliance</span>
+        </h1>
+        <p class="login-hero__subtitle">
+          Transform global regulatory complexity into actionable intelligence. Automatically align new mandates with internal policies, anticipate compliance risks, and streamline remediation with enterprise-grade AI.
+        </p>
+
+        <!-- KPI Bars -->
+        <div class="login-hero__kpis">
+          <div class="login-kpi">
+            <div class="login-kpi__bar"><div class="login-kpi__fill" style="width:75%"></div></div>
+            <div class="login-kpi__val">2,450</div>
+            <div class="login-kpi__lbl">POLICIES</div>
+          </div>
+          <div class="login-kpi">
+            <div class="login-kpi__bar"><div class="login-kpi__fill" style="width:92%"></div></div>
+            <div class="login-kpi__val">92<span style="font-size:12px;color:#94a3b8">%</span></div>
+            <div class="login-kpi__lbl">COMPLIANCE</div>
+          </div>
+          <div class="login-kpi">
+            <div class="login-kpi__bar"><div class="login-kpi__fill" style="width:67%"></div></div>
+            <div class="login-kpi__val">67<span style="font-size:12px;color:#94a3b8">%</span></div>
+            <div class="login-kpi__lbl">COVERAGE</div>
+          </div>
+        </div>
+
+        <!-- Feature Grid -->
+        <div class="login-hero__features">
+          <div class="login-feature">
+            <i data-lucide="brain" class="login-feature__icon"></i>
+            <h3 class="login-feature__title">POLICY ALIGNMENT</h3>
+            <p class="login-feature__desc">Dynamically aligns global regulatory mandates with internal firm policies to instantly identify compliance gaps</p>
+          </div>
+          <div class="login-feature">
+            <i data-lucide="activity" class="login-feature__icon"></i>
+            <h3 class="login-feature__title">REGULATORY RADAR</h3>
+            <p class="login-feature__desc">Continuous monitoring of global jurisdictions, delivering real-time alerts and predictive risk scoring</p>
+          </div>
+          <div class="login-feature">
+            <i data-lucide="wrench" class="login-feature__icon"></i>
+            <h3 class="login-feature__title">AUTOMATED REMEDIATION</h3>
+            <p class="login-feature__desc">Actionable, step-by-step remediation workflows prioritized by regulatory impact and business severity</p>
+          </div>
+          <div class="login-feature">
+            <i data-lucide="zap" class="login-feature__icon"></i>
+            <h3 class="login-feature__title">AI DECODING</h3>
+            <p class="login-feature__desc">Translates complex regulatory publications into clear, actionable summaries in a matter of seconds</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Form Section -->
+      <div class="login-form-wrapper">
+        <div class="login-form-header">
+          <h2 class="login-form-header__title" id="login-welcome-title">WELCOME BACK, OFFICER</h2>
+          <p class="login-form-header__sub" id="login-welcome-sub">Sign in to access your intelligence dashboard</p>
+        </div>
+        
+        <div class="login-card">
+          <!-- SSO Button -->
+          <button class="login-card__sso" type="button" id="btn-google-login">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="16" height="16">
+            Continue with Google
+          </button>
+          
+          <div class="login-card__divider">
+            <span>OR USE EMAIL</span>
+          </div>
+
+          <div class="login-card__tabs">
+            <button class="login-card__tab active" id="tab-login" onclick="toggleAuthMode('login')">SIGN IN</button>
+            <button class="login-card__tab" id="tab-register" onclick="toggleAuthMode('register')">SIGN UP</button>
+          </div>
+
+          <form class="login-card__form" id="login-form">
+            <div class="login-card__field" id="field-name" style="display:none; animation: fadeIn 0.3s ease;">
+              <label class="login-card__label">FULL NAME</label>
+              <div class="login-card__input-wrap">
+                <i data-lucide="user" class="login-card__input-icon"></i>
+                <input type="text" class="login-card__input" id="login-name" placeholder="John Doe" autocomplete="name">
+              </div>
+            </div>
+            
+            <div class="login-card__field" id="field-company" style="display:none; animation: fadeIn 0.3s ease;">
+              <label class="login-card__label">COMPANY NAME</label>
+              <div class="login-card__input-wrap">
+                <i data-lucide="building" class="login-card__input-icon"></i>
+                <input type="text" class="login-card__input" id="login-company" placeholder="Acme Corp" autocomplete="organization">
+              </div>
+            </div>
+            
+            <div class="login-card__field" id="field-sector" style="display:none; animation: fadeIn 0.3s ease;">
+              <label class="login-card__label">INDUSTRY SECTOR</label>
+              <div class="login-card__input-wrap" style="padding-left:12px;">
+                <select class="login-card__input" id="login-sector" style="padding-left:4px; width:100%; border:none; background:transparent; outline:none; color:inherit; font-family:inherit; font-size:13px; appearance:none; cursor:pointer;">
+                  <option value="" disabled selected>Select an industry...</option>
+                  <option value="Financial Services">Financial Services</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="Energy">Energy</option>
+                  <option value="Other">Other</option>
+                </select>
+                <i data-lucide="chevron-down" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--text-muted); pointer-events:none;"></i>
+              </div>
+            </div>
+            
+            <div class="login-card__field">
+              <label class="login-card__label">EMAIL</label>
+              <div class="login-card__input-wrap">
+                <i data-lucide="mail" class="login-card__input-icon"></i>
+                <input type="email" class="login-card__input" id="login-email" placeholder="you@example.com" autocomplete="email">
+              </div>
+            </div>
+            
+            <div class="login-card__field">
+              <label class="login-card__label">PASSWORD</label>
+              <div class="login-card__input-wrap">
+                <i data-lucide="lock" class="login-card__input-icon"></i>
+                <input type="password" class="login-card__input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+                <i data-lucide="eye" class="login-card__input-eye" onclick="togglePasswordVisibility()"></i>
+              </div>
+            </div>
+            
+            <button type="submit" class="login-card__btn" id="login-btn">
+              <span id="login-btn-text">ACCESS DASHBOARD</span>
+              <i data-lucide="arrow-right" style="width:16px;height:16px" id="login-btn-icon"></i>
+            </button>
+            <div class="login-card__error" id="login-error" style="display:none;"></div>
+          </form>
+          
+          <div class="login-card__footer-link">
+            <span id="login-switch-text">Don't have an account?</span> <a href="#" id="login-switch-link" onclick="toggleAuthMode(document.getElementById('tab-login').classList.contains('active') ? 'register' : 'login'); return false;">Sign up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animated Mesh Background -->
+  <div class="ambient-bg"></div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <div class="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand" onclick="window.location.hash='#dashboard'">
+      <div class="sidebar__logo"><i data-lucide="sparkles" style="width:20px;height:20px;color:white;display:block;margin:0 auto;"></i></div>
+      <div class="sidebar__brand-text">POLICY PILOT</div>
+    </div>
+
+    <nav class="sidebar__nav scroll-area">
+      <div class="nav__section-title">Overview</div>
+      <a class="nav__item active" data-view="dashboard" href="#dashboard">
+        <i data-lucide="layout-dashboard" class="nav__icon"></i>
+        <span class="nav__label">Dashboard</span>
+      </a>
+      <a class="nav__item" data-view="feed" href="#feed">
+        <i data-lucide="inbox" class="nav__icon"></i>
+        <span class="nav__label">Regulatory Feed</span>
+        <span class="nav__badge" id="feed-badge" style="display: none;"></span>
+      </a>
+      <a class="nav__item" data-view="policy" href="#policy">
+        <i data-lucide="book-open" class="nav__icon"></i>
+        <span class="nav__label">Policy Repository</span>
+      </a>
+      <a class="nav__item" data-view="copilot" href="#copilot">
+        <i data-lucide="bot" class="nav__icon"></i>
+        <span class="nav__label">Lex AI</span>
+      </a>
+
+      <div class="nav__section-title">Actions</div>
+      <a class="nav__item" data-view="analyzer" href="#analyzer">
+        <i data-lucide="file-text" class="nav__icon"></i>
+        <span class="nav__label">AI Analyzer</span>
+      </a>
+      <a class="nav__item" data-view="escalation" href="#escalation">
+        <i data-lucide="alert-triangle" class="nav__icon"></i>
+        <span class="nav__label">Escalation Queue</span>
+        <span class="nav__badge" style="display:none" id="esc-badge">0</span>
+      </a>
+      
+      <div class="nav__section-title">Advanced</div>
+      <a class="nav__item" data-view="aiAnalyzer" href="#aiAnalyzer">
+        <i data-lucide="git-compare" class="nav__icon"></i>
+        <span class="nav__label">Gap Analysis</span>
+      </a>
+      
+      <a class="nav__item" data-view="impactScanner" href="#impactScanner">
+        <i data-lucide="network" class="nav__icon"></i>
+        <span class="nav__label">Impact Scanner</span>
+      </a>
+
+      <a class="nav__item" data-view="calendar" href="#calendar">
+        <i data-lucide="calendar" class="nav__icon"></i>
+        <span class="nav__label">Compliance Calendar</span>
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="btn btn--ghost" id="sidebar-toggle" style="width:100%;justify-content:center;">
+        <i data-lucide="chevron-left" class="nav__icon" style="margin:0"></i>
+      </button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar__left">
+
+          <div class="topbar__title-wrap">
+            <h1 class="topbar__title" id="topbar-title">Dashboard</h1>
+            <button class="topbar__nav-toggle" id="topbar-nav-toggle" onclick="document.getElementById('topbar-nav-dropdown').classList.toggle('open')">
+              <i data-lucide="chevron-down" style="width:16px;height:16px"></i>
+            </button>
+            <div class="topbar__nav-dropdown" id="topbar-nav-dropdown">
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('dashboard'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="layout-dashboard" style="width:16px;height:16px"></i>
+                <span>Dashboard</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('feed'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="inbox" style="width:16px;height:16px"></i>
+                <span>Regulatory Feed</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('policy'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="book-open" style="width:16px;height:16px"></i>
+                <span>Policy Repository</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('copilot'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="bot" style="width:16px;height:16px"></i>
+                <span>Lex AI</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('escalation'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="alert-triangle" style="width:16px;height:16px"></i>
+                <span>Escalation Queue</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('analyzer'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="file-text" style="width:16px;height:16px"></i>
+                <span>AI Analyzer</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('aiAnalyzer'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="split-square-horizontal"></i>
+                <span>Gap Analysis</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('calendar'); document.getElementById('topbar-nav-dropdown').classList.remove('open');">
+                <i data-lucide="calendar" style="width:16px;height:16px"></i>
+                <span>Compliance Calendar</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar__center">
+            <!-- Premium Global Search Bar -->
+            <div class="topbar__search-wrapper">
+              
+              <div class="search-bg">
+                <i data-lucide="search" style="width:16px; height:16px; color:var(--text-muted); margin-right:10px; flex-shrink:0;"></i>
+                
+                <input id="global-search-input" 
+                       placeholder="Search alerts, policies, or traces..." 
+                       class="search-bg__input"
+                       onfocus="this.parentElement.classList.add('focused')" 
+                       onblur="this.parentElement.classList.remove('focused'); setTimeout(()=>document.getElementById('global-search-results').style.display='none', 200);"
+                       oninput="window.AppCore.App.handleGlobalSearch(this.value)">
+                
+                <div class="search-bg__badge">
+                  <i data-lucide="command" style="width:10px; height:10px;"></i> K
+                </div>
+              </div>
+              
+              <div id="global-search-results" class="search-results-dropdown" style="display:none;"></div>
+            </div>
+        </div>
+        
+        <div class="topbar__right">
+            
+            <div class="topbar__actions">
+            
+            <div id="notif-bell-wrapper">
+              <button class="notif-bell-btn" onclick="window.AppCore.App.toggleNotifications()" title="Compliance Alerts & Notifications" id="notif-bell-btn" aria-label="Notifications">
+                <i data-lucide="bell" style="width:18px;height:18px"></i>
+                <span id="notif-badge" class="notif-badge" style="display:none;"></span>
+              </button>
+              <div id="notif-dropdown" class="notif-dropdown" style="display:none;"></div>
+            </div>
+
+            <button class="btn btn--ghost btn--icon" onclick="window.AppCore.App.simulateUpdate()" title="Inject Live Data">
+              <i data-lucide="zap" style="width:16px;height:16px"></i>
+            </button>
+            <button class="btn btn--ghost btn--icon" onclick="window.AppCore.App.generateReport()" title="Export PDF">
+              <i data-lucide="printer" style="width:16px;height:16px"></i>
+            </button>
+            <button class="btn" onclick="window.AppCore.App.processAllUpdates()" style="margin-left: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #ffffff;">
+              <i data-lucide="play" style="width:14px;height:14px"></i> <span>Process All</span>
+            </button>
+            <button class="btn" onclick="document.getElementById('copilot-toggle').click()" style="margin-left: 8px; background: rgba(59, 130, 246, 0.4); color: #ffffff; border: 1px solid rgba(59, 130, 246, 0.6); box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);">
+              <i data-lucide="bot" style="width:14px;height:14px"></i> <span style="font-weight:700;">Lex AI</span>
+            </button>
+          </div>
+          
+          <div class="topbar__divider"></div>
+          
+          <div class="dropdown" style="position: relative;">
+            <div class="avatar avatar--premium" id="avatar-toggle" style="cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="user" style="width:18px;height:18px;color:var(--text-primary);"></i>
+              <div class="avatar__status avatar__status--online"></div>
+            </div>
+            
+            <div class="topbar__nav-dropdown" id="avatar-dropdown" style="right: 0; left: auto; top: calc(100% + 12px); width: 200px;">
+              <div style="padding: 12px 14px; border-bottom: 1px solid var(--border); margin-bottom: 6px;">
+                <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;" id="dropdown-user-name">Admin User</div>
+                <div style="font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="dropdown-user-email">admin@company.com</div>
+              </div>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('profile'); document.getElementById('avatar-dropdown').classList.remove('open');">
+                <i data-lucide="user" style="width:16px;height:16px"></i>
+                <span>Profile</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('analytics'); document.getElementById('avatar-dropdown').classList.remove('open');">
+                <i data-lucide="bar-chart-2" style="width:16px;height:16px"></i>
+                <span>Analytics & Health</span>
+              </a>
+              <a class="topbar__nav-item" onclick="window.AppCore.Router.navigate('settings'); document.getElementById('avatar-dropdown').classList.remove('open');">
+                <i data-lucide="settings" style="width:16px;height:16px"></i>
+                <span>Settings</span>
+              </a>
+              <a class="topbar__nav-item" style="color: #f87171; margin-top: 4px;" onclick="localStorage.removeItem('app_session'); window.location.reload();">
+                <i data-lucide="log-out" style="width:16px;height:16px; color: #f87171;"></i>
+                <span>Sign Out</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="view-container" id="view-container">
+          <!-- Views render here dynamically -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══ Scripts (order matters) ═══ -->
+  <!-- Utilities first -->
+  <script src="js/utils/helpers.js"></script>
+  <script src="js/utils/event-bus.js"></script>
+  <script src="js/utils/state.js"></script>
+  <script src="js/utils/trace-logger.js"></script>
+
+  <!-- Mock data -->
+  <!-- <script src="js/data/regulatory-updates.js"></script> -->
+  <!-- <script src="js/data/policies.js"></script> -->
+  <script src="js/data/controls.js"></script>
+  <script src="js/data/agents.js"></script>
+
+  <!-- Agents -->
+  <script src="js/agents/orchestrator.js"></script>
+  <script src="js/agents/ingestion.js"></script>
+  <script src="js/agents/parser.js"></script>
+  <script src="js/agents/classifier.js"></script>
+  <script src="js/agents/retriever.js"></script>
+  <script src="js/agents/impact.js"></script>
+  <script src="js/agents/decision-agents.js"></script>
+  <script src="js/agents/drafter.js"></script>
+
+  <!-- Views -->
+  <script src="js/views/main-views.js?v=9"></script>
+  <script src="js/views/analyzer-view.js?v=2"></script>
+  <script src="js/views/ai-analyzer-view.js"></script>
+  <script src="js/views/detail-views.js?v=6"></script>
+  <script src="js/views/settings-view.js?v=13"></script>
+  <script src="js/views/profile-view.js?v=4"></script>
+  <script src="js/views/gap-analysis-view.js?v=8"></script>
+  <script src="js/views/sentinel-view.js?v=3"></script>
+  <script src="js/views/calendar-view.js?v=6"></script>
+  <script src="js/views/analytics-view.js?v=4"></script>
+  <script src="js/views/impact-scanner-view.js"></script>
+
+  <!-- App controller (last) -->
+  <script src="js/app.js?v=18"></script>
+
+  <!-- Copilot -->
+  <script src="js/copilot.js?v=14"></script>
+
+  <script>
+    // Initialize app after all scripts load
+    window.addEventListener('DOMContentLoaded', function () {
+      var loginScreen = document.getElementById('login-screen');
+      var appLoader = document.getElementById('app-loader');
+      var appWrapper = document.querySelector('.app-wrapper');
+      var ambientBg = document.querySelector('.ambient-bg');
+
+      // Auth Mode Toggle
+      var authMode = 'login'; // 'login' or 'register'
+      window.toggleAuthMode = function(mode) {
+        authMode = mode;
+        var tabLogin = document.getElementById('tab-login');
+        var tabRegister = document.getElementById('tab-register');
+        var fieldName = document.getElementById('field-name');
+        var fieldCompany = document.getElementById('field-company');
+        var fieldSector = document.getElementById('field-sector');
+        var btnText = document.getElementById('login-btn-text');
+        var btnIcon = document.getElementById('login-btn-icon');
+        var welcomeTitle = document.getElementById('login-welcome-title');
+        var welcomeSub = document.getElementById('login-welcome-sub');
+        var switchText = document.getElementById('login-switch-text');
+        var switchLink = document.getElementById('login-switch-link');
+
+        if (mode === 'login') {
+          tabLogin.classList.add('active');
+          tabRegister.classList.remove('active');
+          fieldName.style.display = 'none';
+          if(fieldCompany) fieldCompany.style.display = 'none';
+          if(fieldSector) fieldSector.style.display = 'none';
+          btnText.textContent = 'ACCESS DASHBOARD';
+          if (welcomeTitle) welcomeTitle.textContent = 'WELCOME BACK, OFFICER';
+          if (welcomeSub) welcomeSub.textContent = 'Sign in to access your intelligence dashboard';
+          if (switchText) switchText.textContent = "Don't have an account?";
+          if (switchLink) switchLink.textContent = "Sign up";
+          if (btnIcon) btnIcon.setAttribute('data-lucide', 'arrow-right');
+        } else {
+          tabRegister.classList.add('active');
+          tabLogin.classList.remove('active');
+          fieldName.style.display = 'block';
+          if(fieldCompany) fieldCompany.style.display = 'block';
+          if(fieldSector) fieldSector.style.display = 'block';
+          btnText.textContent = 'CREATE ACCOUNT';
+          if (welcomeTitle) welcomeTitle.textContent = 'JOIN REGCHANGE AI';
+          if (welcomeSub) welcomeSub.textContent = 'Sign up to build your compliance intelligence platform';
+          if (switchText) switchText.textContent = "Already have an account?";
+          if (switchLink) switchLink.textContent = "Sign in";
+          if (btnIcon) btnIcon.setAttribute('data-lucide', 'user-plus');
+        }
+        if (window.lucide) lucide.createIcons();
+      };
+
+      window.togglePasswordVisibility = function() {
+        var pwd = document.getElementById('login-password');
+        var icon = document.querySelector('.login-card__input-eye');
+        if (pwd.type === 'password') {
+          pwd.type = 'text';
+          if(icon) icon.setAttribute('data-lucide', 'eye-off');
+        } else {
+          pwd.type = 'password';
+          if(icon) icon.setAttribute('data-lucide', 'eye');
+        }
+        if (window.lucide) lucide.createIcons();
+      };
+
+      // Check if user is already authenticated
+      var session = localStorage.getItem('app_session');
+      if (session) {
+        // Skip login, show loader then app
+        if (loginScreen) loginScreen.style.display = 'none';
+        _bootApp();
+      } else {
+        // Show login screen, hide loader and app
+        if (appLoader) appLoader.style.display = 'none';
+        if (appWrapper) appWrapper.style.display = 'none';
+        if (loginScreen) loginScreen.style.display = '';
+
+        // Init lucide icons on login screen
+        if (window.lucide) lucide.createIcons();
+
+        // Bind login form
+        var loginForm = document.getElementById('login-form');
+        var loginBtn = document.getElementById('login-btn');
+        var loginError = document.getElementById('login-error');
+
+        if (loginForm) {
+          loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var name = document.getElementById('login-name').value.trim();
+            var company = document.getElementById('login-company') ? document.getElementById('login-company').value.trim() : '';
+            var sector = document.getElementById('login-sector') ? document.getElementById('login-sector').value : '';
+            var email = document.getElementById('login-email').value.trim();
+            var password = document.getElementById('login-password').value;
+
+            // Reset error
+            if (loginError) loginError.style.display = 'none';
+
+            if (!email || !password || (authMode === 'register' && (!name || !company || !sector))) {
+              if (loginError) {
+                loginError.textContent = 'Please fill in all fields.';
+                loginError.style.display = 'block';
+              }
+              return;
+            }
+
+            // Simulate authentication/registration
+            loginBtn.classList.add('loading');
+            loginBtn.innerHTML = '<span class="login-card__spinner"></span> ' + (authMode === 'register' ? 'Creating Account...' : 'Authenticating...');
+
+            setTimeout(function () {
+              // Store session
+              var sessionName = name;
+              if (!sessionName) {
+                sessionName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+              }
+
+              localStorage.setItem('app_session', JSON.stringify({
+                email: email,
+                loginTime: new Date().toISOString(),
+                name: sessionName,
+                company: company || 'Acme Corp',
+                sector: sector || 'Financial Services'
+              }));
+
+              // Transition: fade out login, show loader, then boot app
+              window.location.hash = 'dashboard';
+              loginScreen.classList.add('hidden');
+              if (appWrapper) appWrapper.style.display = '';
+
+              setTimeout(function () {
+                loginScreen.style.display = 'none';
+                // Show loader briefly
+                if (appLoader) {
+                  appLoader.style.display = '';
+                  appLoader.classList.remove('hidden');
+                }
+                _bootApp();
+              }, 600);
+            }, 1500);
+          });
+        }
+      }
+
+      function _bootApp() {
+        var statusEl = document.getElementById('loader-status');
+        setTimeout(function() { if (statusEl) statusEl.textContent = 'Authenticating compliance agents...'; }, 400);
+        setTimeout(function() { if (statusEl) statusEl.textContent = 'Loading policy vectors...'; }, 800);
+        setTimeout(function() { if (statusEl) statusEl.textContent = 'Ready.'; }, 1400);
+
+        setTimeout(function () {
+          window.AppCore.App.init();
+          if (window.AppCore.Copilot && !document.getElementById('copilot-widget')) {
+            window.AppCore.Copilot.init();
+          }
+          lucide.createIcons();
+
+          // Close topbar dropdowns on click outside
+          document.addEventListener('click', function(e) {
+            var dd = document.getElementById('topbar-nav-dropdown');
+            var btn = document.getElementById('topbar-nav-toggle');
+            if (dd && !dd.contains(e.target) && btn && !btn.contains(e.target)) {
+              dd.classList.remove('open');
+            }
+            
+            var avatarDd = document.getElementById('avatar-dropdown');
+            var avatarToggle = document.getElementById('avatar-toggle');
+            if (avatarDd && !avatarDd.contains(e.target) && avatarToggle && !avatarToggle.contains(e.target)) {
+              avatarDd.classList.remove('open');
+            }
+          });
+
+          // Avatar toggle
+          var avatarToggle = document.getElementById('avatar-toggle');
+          if (avatarToggle) {
+            avatarToggle.addEventListener('click', function() {
+              document.getElementById('avatar-dropdown').classList.toggle('open');
+            });
+          }
+
+          // Populate session info
+          try {
+            var sessionData = JSON.parse(localStorage.getItem('app_session'));
+            if (sessionData) {
+              var nameEl = document.getElementById('dropdown-user-name');
+              var emailEl = document.getElementById('dropdown-user-email');
+              var breadcrumbEl = document.getElementById('topbar-company-name');
+              
+              if (nameEl) nameEl.textContent = sessionData.name || 'Admin User';
+              if (emailEl) emailEl.textContent = sessionData.email || 'user@example.com';
+              if (breadcrumbEl && sessionData.company) breadcrumbEl.textContent = sessionData.company + ' Policy Pilot';
+            }
+          } catch(e) {}
+
+          // Hide loader
+          var loader = document.getElementById('app-loader');
+          if (loader) {
+            loader.classList.add('hidden');
+            setTimeout(function () { loader.remove(); }, 600);
+          }
+        }, 1600);
+      }
+    });
+  </script>
+
+  <!-- Firebase Authentication (Modular CDN) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAT0XcxpBOpW30mQb7g7CKyeaQMexbWOtc",
+      authDomain: "policy-pilot-cad36.firebaseapp.com",
+      projectId: "policy-pilot-cad36",
+      storageBucket: "policy-pilot-cad36.firebasestorage.app",
+      messagingSenderId: "796102237036",
+      appId: "1:796102237036:web:7d75630da18785ede5b149",
+      measurementId: "G-H46JVH1L60"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const btnGoogleLogin = document.getElementById('btn-google-login');
+    if (btnGoogleLogin) {
+      btnGoogleLogin.addEventListener('click', () => {
+        const originalText = btnGoogleLogin.innerHTML;
+        btnGoogleLogin.innerHTML = '<div class="loader-spinner" style="width:16px;height:16px;border-width:2px;"></div> Connecting...';
+        btnGoogleLogin.disabled = true;
+
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const user = result.user;
+            
+            // Update the session object with Google Data
+            const session = {
+              name: user.displayName || 'Google User',
+              email: user.email || '',
+              photo: user.photoURL || '',
+              company: 'Autonex',
+              sector: 'Financial Services'
+            };
+            
+            localStorage.setItem('app_session', JSON.stringify(session));
+            
+            // Ensure global transition function is called
+            if (window.transitionToApp) {
+               window.transitionToApp();
+            } else {
+               window.location.reload();
+            }
+          })
+          .catch((error) => {
+            console.error("Google Auth Error:", error);
+            btnGoogleLogin.innerHTML = originalText;
+            btnGoogleLogin.disabled = false;
+            alert("Authentication failed: " + error.message);
+          });
+      });
+    }
+  </script>
+  <!-- html2pdf for generating dashboard snapshots -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</body>
+</html>
