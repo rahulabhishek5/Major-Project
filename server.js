@@ -1926,8 +1926,9 @@ app.post('/api/impact-matrix', async (req, res) => {
         const Groq = require('groq-sdk');
         const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
         
-        // Fetch policies
-        db.all(`SELECT policy_id, title, summary, sections_json FROM policies WHERE policy_id IN (${policyIds.map(id => `'${id}'`).join(',')})`, [], async (err, policies) => {
+        // Fetch policies securely using parameterized queries
+        const placeholders = policyIds.map(() => '?').join(',');
+        db.all(`SELECT policy_id, title, summary, sections_json FROM policies WHERE policy_id IN (${placeholders})`, policyIds, async (err, policies) => {
             if (err) return res.status(500).json({ error: err.message });
 
             let prompt = `You are a compliance AI. Analyze the cross-reference matrix between these Regulations and Internal Policies.
