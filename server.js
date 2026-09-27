@@ -8,18 +8,24 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const compression = require('compression');
+const NodeCache = require('node-cache');
 const upload = multer({ storage: multer.memoryStorage() });
+
+// Initialize in-memory cache (15 mins default TTL)
+const cache = new NodeCache({ stdTTL: 900, checkperiod: 120 });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(compression()); // Gzip/Brotli compress responses
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve Static Frontend Files
-app.use(express.static(path.join(__dirname)));
+// Serve Static Frontend Files with Cache-Control headers (1 day cache)
+app.use(express.static(path.join(__dirname), { maxAge: '1d' }));
 
 // ---------------------------------------------------------
 // REST API ENDPOINTS
@@ -133,6 +139,10 @@ ${documentText.substring(0, 10000)}
 // GET live scraped regulatory news
 app.get('/api/scrape-regulations', async (req, res) => {
     try {
+        const cacheKey = 'regulations';
+        const cached = cache.get(cacheKey);
+        if (cached) return res.json(cached);
+
         // Scrape HackerNews (as a reliable mock for news/tech updates)
         // In a real scenario, this would be SEC.gov or similar
         const { data } = await axios.get('https://news.ycombinator.com/');
@@ -163,7 +173,9 @@ app.get('/api/scrape-regulations', async (req, res) => {
             });
         });
 
-        res.json({ success: true, count: articles.length, data: articles });
+        const responseData = { success: true, count: articles.length, data: articles };
+        cache.set(cacheKey, responseData);
+        res.json(responseData);
     } catch (error) {
         console.error('Scraping error:', error.message);
         res.status(500).json({ success: false, error: 'Failed to scrape data' });
